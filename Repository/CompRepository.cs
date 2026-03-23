@@ -6,9 +6,14 @@ using TFTDataTrackerApi.Models;
 
 namespace TFTDataTrackerApi.Repository
 {
-    public class CompRepository(DbContext context)
+    public class CompRepository
     {
-        private readonly DbContext context = context;
+        private readonly DbContext context;
+
+        public CompRepository(DbContext context)
+        {
+            this.context = context;
+        }
 
         public async Task<List<Comps>> ListarComps()
         {
@@ -23,11 +28,11 @@ namespace TFTDataTrackerApi.Repository
             {
                 comps.Add(new Comps
                 {
-                    Id = reader.GetInt32(0),
-                    Name = reader.GetString(1),
-                    Traits = reader.IsDBNull(2) ? null : reader.GetString(2),
-                    Style = reader.IsDBNull(3) ? null : reader.GetString(3),
-                    SetId = reader.GetInt32(4)
+                    id = reader.GetInt32(0),
+                    name = reader.GetString(1),
+                    traits = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    style = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    setid = reader.GetInt32(4)
 
                 });
             }
@@ -67,10 +72,10 @@ namespace TFTDataTrackerApi.Repository
             var insertQuery = "INSERT INTO comps (name, traits, style, set_id) VALUES (@name, @traits, @style, @setid)";
 
             using var comando = new NpgsqlCommand(insertQuery, conexao);
-            comando.Parameters.AddWithValue("@name", comp.Name);
-            comando.Parameters.AddWithValue("@traits", comp.Traits ?? (object)DBNull.Value);
-            comando.Parameters.AddWithValue("@style", comp.Style ?? (object)DBNull.Value);
-            comando.Parameters.AddWithValue("@setid", comp.SetId);
+            comando.Parameters.AddWithValue("@name", comp.name);
+            comando.Parameters.AddWithValue("@traits", comp.traits ?? (object)DBNull.Value);
+            comando.Parameters.AddWithValue("@style", comp.style ?? (object)DBNull.Value);
+            comando.Parameters.AddWithValue("@setid", comp.setid);
 
             await comando.ExecuteNonQueryAsync();
             return true;
@@ -84,9 +89,9 @@ namespace TFTDataTrackerApi.Repository
 
             var updateQuery = "UPDATE comps SET name = @name, traits = @traits, style = @style WHERE id = @id";
             using var comando = new NpgsqlCommand(updateQuery, conexao);
-            comando.Parameters.AddWithValue("@name", comps.Name);
-            comando.Parameters.AddWithValue("@traits", (object?)comps.Traits ?? DBNull.Value);
-            comando.Parameters.AddWithValue("@style", (object?)comps.Style ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@name", comps.name);
+            comando.Parameters.AddWithValue("@traits", (object?)comps.traits ?? DBNull.Value);
+            comando.Parameters.AddWithValue("@style", (object?)comps.style ?? DBNull.Value);
             comando.Parameters.AddWithValue("@id", id);
 
             var linha = await comando.ExecuteNonQueryAsync();
