@@ -6,14 +6,9 @@ using TFTDataTrackerApi.Models;
 
 namespace TFTDataTrackerApi.Repository
 {
-    public class CompRepository
+    public class CompRepository(DbContext context)
     {
-        private readonly DbContext context;
-
-        public CompRepository(DbContext context)
-        {
-            this.context = context;
-        }
+        private readonly DbContext context = context;
 
         public async Task<List<Comps>> ListarComps()
         {
@@ -39,6 +34,7 @@ namespace TFTDataTrackerApi.Repository
             return comps;
         }
 
+        //listar comps
         public async Task<List<CompDto>> ListarCompsPorSet(int SetNumber)
         {
             var comps = new List<CompDto>();
@@ -58,6 +54,30 @@ namespace TFTDataTrackerApi.Repository
                     Traits = reader.IsDBNull(2) ? null : reader.GetString(2),
                     Style = reader.IsDBNull(3) ? null : reader.GetString(3),
                     SetNumber = reader.GetInt32(4)
+                });
+            }
+            return comps;
+        }
+        // rolldown de add form
+        public async Task<List<Comps>> ListarCompsPorPatch(int setid)
+        {
+            var comps = new List<Comps>();
+            using var conexao = context.CriarConexao();
+            await conexao.OpenAsync();
+
+            using var comando = new NpgsqlCommand("SELECT * FROM comps WHERE set_id = @setid", conexao);
+            comando.Parameters.AddWithValue("@setid", setid);
+
+            using var reader = await comando.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                comps.Add(new Comps
+                {
+                    id = reader.GetInt32(0),
+                    name = reader.GetString(1),
+                    traits = reader.GetString(2),
+                    style = reader.GetString(3),
+                    setid = reader.GetInt32(4)
                 });
             }
             return comps;
@@ -110,6 +130,10 @@ namespace TFTDataTrackerApi.Repository
             var linha = await comando.ExecuteNonQueryAsync();
             return linha > 0;
         }
+
+        //
+       
+
 
     }
 }

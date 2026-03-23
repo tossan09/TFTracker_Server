@@ -15,10 +15,19 @@ namespace TFTDataTrackerApi.Controllers
             _compRepository = compRepository;
         }
 
+        // tabela comps
         [HttpGet("set/{setNumber}")]
         public async Task<IActionResult> GetCompsBySet(int setNumber)
         {
             var comps = await _compRepository.ListarCompsPorSet(setNumber);
+            return Ok(comps);
+        }
+
+        // rolldwon de add form
+        [HttpGet("byPatch/{setid}")]
+        public async Task<IActionResult> GetCompsByPatch(int setid)
+        {
+            var comps = await _compRepository.ListarCompsPorPatch(setid);
             return Ok(comps);
         }
 
@@ -41,7 +50,6 @@ namespace TFTDataTrackerApi.Controllers
             }
         }
 
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Comps comp)
         {
@@ -60,6 +68,5 @@ namespace TFTDataTrackerApi.Controllers
                 return NotFound("Comp nao encontrada");
             return Ok("Comp removida");
         }
-
     }
 }
