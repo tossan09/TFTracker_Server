@@ -64,22 +64,24 @@ namespace TFTDataTrackerApi.Repository
         }
 
 
-        public async Task AdicionarComp(Comps comps)
+        public async Task<bool> AddComp(Comps comp)
         {
             using var conexao = context.CriarConexao();
             await conexao.OpenAsync();
 
             var insertQuery = "INSERT INTO comps (name, traits, style, set_id) VALUES (@name, @traits, @style, @setid)";
-            using var comando = new NpgsqlCommand(insertQuery, conexao);
-            comando.Parameters.AddWithValue("@name", comps.name);
-            comando.Parameters.AddWithValue("@traits", (object?)comps.traits ?? DBNull.Value);
-            comando.Parameters.AddWithValue("@style", (object?)comps.style ?? DBNull.Value);
-            comando.Parameters.AddWithValue("@setid", comps.setid);
 
+            using var comando = new NpgsqlCommand(insertQuery, conexao);
+            comando.Parameters.AddWithValue("@name", comp.name);
+            comando.Parameters.AddWithValue("@traits", comp.traits ?? (object)DBNull.Value);
+            comando.Parameters.AddWithValue("@style", comp.style ?? (object)DBNull.Value);
+            comando.Parameters.AddWithValue("@setid", comp.setid);
 
             await comando.ExecuteNonQueryAsync();
+            return true;
         }
-        
+
+
         public async Task<bool> EditComp(int id, Comps comps)
         {
             using var conexao = context.CriarConexao();

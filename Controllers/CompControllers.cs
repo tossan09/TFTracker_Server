@@ -25,9 +25,22 @@ namespace TFTDataTrackerApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Comps comps)
         {
-            await _compRepository.AdicionarComp(comps);
-            return Ok("Comp adicionada");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _compRepository.AddComp(comps);
+                return Ok(comps);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno", detail = ex.Message });
+            }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Comps comp)
