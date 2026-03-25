@@ -28,7 +28,19 @@ namespace TFTDataTrackerApi.Controllers
             return Ok(partidas);
 
         }
-        
+
+        [HttpGet("comp/{compId}")]
+        public async Task<IActionResult> GetMatchesByComp(int compId)
+        {
+            var partidas = await _matchRepository.ListarMatchesPorComp(compId);
+
+            if (partidas == null || partidas.Count == 0)
+                return NotFound();
+
+            return Ok(partidas);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Matches matches)
         {

@@ -75,6 +75,36 @@ namespace TFTDataTrackerApi.Repository
             }
             return partidas;
         }
+        //
+        public async Task<List<Matches>> ListarMatchesPorComp(int compId)
+        {
+            var partidas = new List<Matches>();
+            using var conexao = context.CriarConexao();
+            await conexao.OpenAsync();
+
+            using var comando = new NpgsqlCommand(@"SELECT id, comp_id, patch_id, placement, finallevel, goldstage32, goldstage41, hpstage32, forced, contested, comment FROM matches WHERE comp_id = @compId", conexao);
+            comando.Parameters.AddWithValue("@compId", compId);
+            using var reader = await comando.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                partidas.Add(new Matches
+                {
+                    id = reader.GetInt32(0),
+                    comp_id = reader.GetInt32(1),
+                    patch_id = reader.GetInt32(2),
+                    placement = reader.GetInt32(3),
+                    finallevel = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                    goldstage32 = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
+                    goldstage41 = reader.IsDBNull(6) ? (int?)null : reader.GetInt32(6),
+                    hpstage32 = reader.IsDBNull(7) ? (int?)null : reader.GetInt32(7),
+                    forced = reader.GetBoolean(8),
+                    contested = reader.GetBoolean(9),
+                    comment = reader.IsDBNull(10) ? null : reader.GetString(10)
+                });
+            }
+            return partidas;
+        }
  
         public async Task<bool> AddPartida(Matches matches)
         {
