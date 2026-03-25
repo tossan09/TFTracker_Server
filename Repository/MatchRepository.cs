@@ -44,25 +44,23 @@ namespace TFTDataTrackerApi.Repository
             }
             return partidas;
         }
-
-        public async Task<List<Matches>> ListarCompIDPorPatchID(int patchId, int compId)
+        public async Task<List<MatchFulldto>> ListarMatchesPorComp(string compname)
         {
-            var partidas = new List<Matches>();
+            var partidas = new List<MatchFulldto>();
             using var conexao = context.CriarConexao();
             await conexao.OpenAsync();
 
-            using var comando = new NpgsqlCommand("SELECT * FROM matches WHERE comp_id = @compId AND patch_id = @patchId ORDER BY id DESC", conexao);
-            comando.Parameters.AddWithValue("@compId", compId);
-            comando.Parameters.AddWithValue("@patchId", patchId);
+            using var comando = new NpgsqlCommand("SELECT * FROM vw_matches_full WHERE comp_name = @compname ORDER BY id DESC", conexao);
+            comando.Parameters.AddWithValue("@compname", compname);
             using var reader = await comando.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
             {
-                partidas.Add(new Matches
+                partidas.Add(new MatchFulldto
                 {
                     id = reader.GetInt32(0),
-                    comp_id = reader.GetInt32(1),
-                    patch_id = reader.GetInt32(2),
+                    compname = reader.GetString(1),
+                    patchnumber = reader.GetString(2),
                     placement = reader.GetInt32(3),
                     finallevel = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
                     goldstage32 = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
@@ -75,24 +73,25 @@ namespace TFTDataTrackerApi.Repository
             }
             return partidas;
         }
-        //
-        public async Task<List<Matches>> ListarMatchesPorComp(int compId)
+
+        public async Task<List<MatchFulldto>> ListarCompIDPorPatchID(string compname, string patchnumber)
         {
-            var partidas = new List<Matches>();
+            var partidas = new List<MatchFulldto>();
             using var conexao = context.CriarConexao();
             await conexao.OpenAsync();
 
-            using var comando = new NpgsqlCommand(@"SELECT id, comp_id, patch_id, placement, finallevel, goldstage32, goldstage41, hpstage32, forced, contested, comment FROM matches WHERE comp_id = @compId", conexao);
-            comando.Parameters.AddWithValue("@compId", compId);
+            using var comando = new NpgsqlCommand("SELECT * FROM vw_matches_full WHERE comp_name = @compname AND patch_number = @patchnumber ORDER BY id DESC", conexao);
+            comando.Parameters.AddWithValue("@compname", compname);
+            comando.Parameters.AddWithValue("@patchnumber", patchnumber);
             using var reader = await comando.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
             {
-                partidas.Add(new Matches
+                partidas.Add(new MatchFulldto
                 {
                     id = reader.GetInt32(0),
-                    comp_id = reader.GetInt32(1),
-                    patch_id = reader.GetInt32(2),
+                    compname = reader.GetString(1),
+                    patchnumber = reader.GetString(2),
                     placement = reader.GetInt32(3),
                     finallevel = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
                     goldstage32 = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
@@ -105,7 +104,8 @@ namespace TFTDataTrackerApi.Repository
             }
             return partidas;
         }
- 
+
+
         public async Task<bool> AddPartida(Matches matches)
         {
             using var conexao = context.CriarConexao();
