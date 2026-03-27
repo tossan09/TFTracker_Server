@@ -36,7 +36,7 @@ namespace TFTDataTrackerApi.Controllers
         {
             var ok = await repository.AdicionarPatch(patches);
             if (!ok) return BadRequest("Erro ao criar patch");
-            return Ok("Patch criado");
+            return Ok(new { message = "Patch criado" });
         }
 
     }

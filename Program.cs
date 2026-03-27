@@ -10,6 +10,7 @@ builder.Services.AddScoped<CompRepository>();
 builder.Services.AddScoped<MatchRepository>();
 builder.Services.AddScoped<SetRepository>();
 builder.Services.AddScoped<PatchRepository>();
+builder.Services.AddScoped<StatsRepository>();
 
 builder.Services.AddScoped<DbContext>();
 
