@@ -105,6 +105,25 @@ namespace TFTDataTrackerApi.Repository
             return partidas;
         }
 
+        //componente recent placement
+        public async Task<List<int>> ListarPlacementRecent()
+        {
+            var placements = new List<int>();
+            using var conexao = context.CriarConexao();
+            await conexao.OpenAsync();
+
+            var query = new NpgsqlCommand(
+                "SELECT placement FROM matches ORDER BY id DESC LIMIT 20;", conexao);
+
+            using var reader = await query.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                placements.Add(reader.GetInt32(0));
+            }
+
+            return placements;
+        }
+
 
         public async Task<bool> AddPartida(Matches matches)
         {

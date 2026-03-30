@@ -35,6 +35,15 @@ namespace TFTDataTrackerApi.Controllers
             return Ok(partidas);
 
         }
+        //componente recent placement
+        [HttpGet("placement")]
+        public async Task<IActionResult> GetPlacement()
+        {
+            var placement = await _matchRepository.ListarPlacementRecent();
+            if (placement == null || placement.Count == 0)
+                return Ok(new List<int>());
+            return Ok(placement);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Matches matches)
