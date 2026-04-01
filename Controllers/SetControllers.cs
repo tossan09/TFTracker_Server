@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
 using TFTDataTrackerApi.Models;
 using TFTDataTrackerApi.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TFTDataTrackerApi.Controllers
 {
@@ -18,6 +18,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] Sets sets)
         {
             var ok = await setRepository.AdicionarSet(sets);

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TFTDataTrackerApi.Models;
 using TFTDataTrackerApi.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TFTDataTrackerApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] Patches patches)
         {
             var ok = await repository.AdicionarPatch(patches);

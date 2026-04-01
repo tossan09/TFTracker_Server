@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TFTDataTrackerApi.Models;
 using TFTDataTrackerApi.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TFTDataTrackerApi.Controllers
 {
@@ -42,6 +43,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add([FromBody] Matches matches)
         {
             if(!ModelState.IsValid)
@@ -60,6 +62,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var exclude = await _matchRepository.DeleteMatch(id);

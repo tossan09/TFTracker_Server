@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TFTDataTrackerApi.Models;
 using TFTDataTrackerApi.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TFTDataTrackerApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add([FromBody] Comps comps)
         {
             if (!ModelState.IsValid)
@@ -51,6 +53,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] Comps comp)
         {
             var edit = await _compRepository.EditComp(id, comp);
@@ -61,6 +64,7 @@ namespace TFTDataTrackerApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var excluir = await _compRepository.DeleteComp(id);
