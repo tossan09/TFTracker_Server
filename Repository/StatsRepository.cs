@@ -26,7 +26,7 @@ namespace TFTDataTrackerApi.Repository
                     WinratePercent = reader.GetDecimal(2),
                     Top4RatePercent = reader.GetDecimal(3),
                     Bot8RatePercent = reader.GetDecimal(4),
-                    AvgConsistency = reader.GetDecimal(5),
+                    AvgConsistency = reader.IsDBNull(5) ? null : reader.GetDecimal(5),
                     TotalMatches = reader.GetInt32(6)
                 });
             }

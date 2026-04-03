@@ -7,7 +7,7 @@
         public decimal WinratePercent { get; set; }
         public decimal Top4RatePercent { get; set; }
         public decimal Bot8RatePercent { get; set; }
-        public decimal AvgConsistency { get; set; }
+        public decimal? AvgConsistency { get; set; }
         public int TotalMatches { get; set; }
     }
 }

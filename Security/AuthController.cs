@@ -17,7 +17,7 @@ namespace TFTDataTrackerApi.Security
                 var user = new User
                 {
                     AdmUser = login.Username,
-                    Roles = _config.GetSection("Auth:Roles").Get<List<string>>() ?? ["Admin"]
+                    Roles = _config.GetSection("Auth:Roles").Get<List<string>>()!
                 };
 
                 var token = _tokenService.GerarToken(user);
