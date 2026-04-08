@@ -5,8 +5,23 @@ using TFTDataTrackerApi.Data;
 using TFTDataTrackerApi.Extensions;
 using TFTDataTrackerApi.Repository;
 using TFTDataTrackerApi.Security;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate:
+        "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File("logs/tftracker_log.txt",
+        rollingInterval: RollingInterval.Day,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss}\nLevel: {Level:u3}\nUser: {User}\nRoles: {Roles}\nMessage: {Message:lj}\nException: {Exception}\n---\n")
+    .CreateLogger();
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
