@@ -250,3 +250,10 @@ Roles: Admin
 Message: User tossan with roles Admin tried to delete non-existing comp 78
 Exception: 
 ---
+2026-04-08 17:28:35
+Level: WRN
+User: 
+Roles: 
+Message: The WebRootPath was not found: E:\PROJETO TFT_ANALYZER\TFTDataTrackerApi\wwwroot. Static files may be unavailable.
+Exception: 
+---
